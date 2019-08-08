@@ -3,18 +3,20 @@ class Personaje
     private id:number;
     private nombre:string;
     private apellido:string;
+    private email:string;
     private edad:number;
-    private casa:ECasa;
-    private esTraidor:boolean;
+    private sexo:ESexo;
+    private tipo:ETipo;
 
-    constructor(id?:number, nombre?:string, apellido?:string, edad?:number, casa?:string, esTraidor?:boolean)
+    constructor(id?:number, nombre?:string, apellido?:string, email?:string, edad?:number, sexo?:string, tipo?:string)
     {
-        this.id = id;//Personaje.getProximoId();
+        this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
+        this.email = email;
         this.edad = edad;
-        this.casa = ECasa[casa];
-        this.esTraidor = esTraidor;
+        this.sexo = ESexo[sexo];
+        this.tipo = ETipo[tipo];
     }
 
     public static getProximoId():number
@@ -25,8 +27,6 @@ class Personaje
         {
             proximoID = 20000;
         }
-    
-        //localStorage.setItem("ID", String(proximoID++));
 
         return proximoID;
     }
@@ -69,6 +69,16 @@ class Personaje
         this.apellido = apellido;
     }
 
+    public getEmail():string
+    {
+        return this.email;
+    }
+
+    public setEmail(email:string):void
+    {
+        this.email = email;
+    }
+
     public getEdad():number
     {
         return this.edad;
@@ -79,62 +89,44 @@ class Personaje
         this.edad = edad;
     }
 
-    public getCasa():ECasa
+    public getSexo():ESexo
     {
-        return this.casa;
+        return this.sexo;
     }
 
-    public getCasaStr():string
+    public getSexoStr():string
     {
-        return this.casa;
+        return this.sexo;
     }
 
-    public setCasa(casa:ECasa):void
+    public setSexo(sexo:ESexo):void
     {
-        this.casa = casa;
+        this.sexo = sexo;
     }
 
-    public setCasaStr(casa:string):void
+    public setSexoStr(sexo:string):void
     {
-        this.setCasa(ECasa[casa]);
+        this.setSexo(ESexo[sexo]);
     }
 
-    public getEsTraidor():boolean
+    public getTipo():ETipo
     {
-        return this.esTraidor;
+        return this.tipo;
     }
 
-    public setEsTraidor(esTraidor:boolean):void
+    public getTipoStr():string
     {
-        this.esTraidor = esTraidor;
+        return this.tipo;
     }
 
-    public getEsTraidorStr():string
+    public setTipo(tipo:ETipo):void
     {
-        let retorno:string;
-
-        if(this.getEsTraidor())
-        {
-            retorno = "Si";
-        }
-        else
-        {
-            retorno = "No";
-        }
-
-        return retorno;
+        this.tipo = tipo;
     }
 
-    public setEsTraidorStr(esTraidor:string):void
+    public setTipoStr(tipo:string):void
     {
-        if(esTraidor == "Si")
-        {
-            this.setEsTraidor(true);
-        }
-        else if(esTraidor == "No")
-        {
-            this.setEsTraidor(false);
-        }
+        this.setTipo(ETipo[tipo]);
     }
 
     public getDinamico(atributo:string):any
@@ -152,14 +144,17 @@ class Personaje
             case "apellido":
                 valor = this.getApellido();
                 break;
+            case "email":
+                valor = this.getEmail();
+                break;
             case "edad":
                 valor = this.getEdad();
                 break;
-            case "casa":
-                valor = this.getCasa();
+            case "sexo":
+                valor = this.getSexo();
                 break;
-            case "traidor":
-                valor = this.getEsTraidor();
+            case "tipo":
+                valor = this.getTipo();
                 break;
             default:
                 valor = null;
@@ -182,14 +177,17 @@ class Personaje
             case "apellido":
                 this.setApellido(valor);
                 break;
+            case "email":
+                this.setEmail(valor);
+                break;
             case "edad":
                 this.setEdad(valor);
                 break;
-            case "casa":
-                this.setCasa(valor);
+            case "sexo":
+                this.setSexo(valor);
                 break;
-            case "traidor":
-                this.setEsTraidor(valor);
+            case "tipo":
+                this.setTipo(valor);
                 break;
         }
     }
@@ -201,15 +199,16 @@ class Personaje
         texto += "ID: " + this.getId() + "\n";
         texto += "NOMBRE: " + this.getNombre() + "\n";
         texto += "APELLIDO: " + this.getApellido() + "\n";
+        texto += "E-MAIL: " + this.getEmail() + "\n";
         texto += "EDAD: " + this.getEdad() + "\n";
-        texto += "CASA: " + this.getCasa() + "\n";
-        texto += "ES TRAIDOR: " + this.getEsTraidorStr();
+        texto += "SEXO: " + this.getSexoStr() + "\n";
+        texto += "TIPO: " + this.getTipoStr();
     
         return texto;
     }
 
     public getAtributos():string[]
     {
-        return ["id", "nombre", "apellido", "edad", "casa", "traidor"];
+        return ["id", "nombre", "apellido", "email", "edad", "sexo", "tipo"];
     }
 }

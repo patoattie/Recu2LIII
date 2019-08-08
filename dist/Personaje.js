@@ -1,11 +1,12 @@
 var Personaje = (function () {
-    function Personaje(id, nombre, apellido, edad, casa, esTraidor) {
+    function Personaje(id, nombre, apellido, email, edad, sexo, tipo) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
+        this.email = email;
         this.edad = edad;
-        this.casa = ECasa[casa];
-        this.esTraidor = esTraidor;
+        this.sexo = ESexo[sexo];
+        this.tipo = ETipo[tipo];
     }
     Personaje.getProximoId = function () {
         var proximoID = Number(localStorage.getItem("ID"));
@@ -37,47 +38,41 @@ var Personaje = (function () {
     Personaje.prototype.setApellido = function (apellido) {
         this.apellido = apellido;
     };
+    Personaje.prototype.getEmail = function () {
+        return this.email;
+    };
+    Personaje.prototype.setEmail = function (email) {
+        this.email = email;
+    };
     Personaje.prototype.getEdad = function () {
         return this.edad;
     };
     Personaje.prototype.setEdad = function (edad) {
         this.edad = edad;
     };
-    Personaje.prototype.getCasa = function () {
-        return this.casa;
+    Personaje.prototype.getSexo = function () {
+        return this.sexo;
     };
-    Personaje.prototype.getCasaStr = function () {
-        return this.casa;
+    Personaje.prototype.getSexoStr = function () {
+        return this.sexo;
     };
-    Personaje.prototype.setCasa = function (casa) {
-        this.casa = casa;
+    Personaje.prototype.setSexo = function (sexo) {
+        this.sexo = sexo;
     };
-    Personaje.prototype.setCasaStr = function (casa) {
-        this.setCasa(ECasa[casa]);
+    Personaje.prototype.setSexoStr = function (sexo) {
+        this.setSexo(ESexo[sexo]);
     };
-    Personaje.prototype.getEsTraidor = function () {
-        return this.esTraidor;
+    Personaje.prototype.getTipo = function () {
+        return this.tipo;
     };
-    Personaje.prototype.setEsTraidor = function (esTraidor) {
-        this.esTraidor = esTraidor;
+    Personaje.prototype.getTipoStr = function () {
+        return this.tipo;
     };
-    Personaje.prototype.getEsTraidorStr = function () {
-        var retorno;
-        if (this.getEsTraidor()) {
-            retorno = "Si";
-        }
-        else {
-            retorno = "No";
-        }
-        return retorno;
+    Personaje.prototype.setTipo = function (tipo) {
+        this.tipo = tipo;
     };
-    Personaje.prototype.setEsTraidorStr = function (esTraidor) {
-        if (esTraidor == "Si") {
-            this.setEsTraidor(true);
-        }
-        else if (esTraidor == "No") {
-            this.setEsTraidor(false);
-        }
+    Personaje.prototype.setTipoStr = function (tipo) {
+        this.setTipo(ETipo[tipo]);
     };
     Personaje.prototype.getDinamico = function (atributo) {
         var valor;
@@ -91,14 +86,17 @@ var Personaje = (function () {
             case "apellido":
                 valor = this.getApellido();
                 break;
+            case "email":
+                valor = this.getEmail();
+                break;
             case "edad":
                 valor = this.getEdad();
                 break;
-            case "casa":
-                valor = this.getCasa();
+            case "sexo":
+                valor = this.getSexo();
                 break;
-            case "traidor":
-                valor = this.getEsTraidor();
+            case "tipo":
+                valor = this.getTipo();
                 break;
             default:
                 valor = null;
@@ -117,14 +115,17 @@ var Personaje = (function () {
             case "apellido":
                 this.setApellido(valor);
                 break;
+            case "email":
+                this.setEmail(valor);
+                break;
             case "edad":
                 this.setEdad(valor);
                 break;
-            case "casa":
-                this.setCasa(valor);
+            case "sexo":
+                this.setSexo(valor);
                 break;
-            case "traidor":
-                this.setEsTraidor(valor);
+            case "tipo":
+                this.setTipo(valor);
                 break;
         }
     };
@@ -133,13 +134,14 @@ var Personaje = (function () {
         texto += "ID: " + this.getId() + "\n";
         texto += "NOMBRE: " + this.getNombre() + "\n";
         texto += "APELLIDO: " + this.getApellido() + "\n";
+        texto += "E-MAIL: " + this.getEmail() + "\n";
         texto += "EDAD: " + this.getEdad() + "\n";
-        texto += "CASA: " + this.getCasa() + "\n";
-        texto += "ES TRAIDOR: " + this.getEsTraidorStr();
+        texto += "SEXO: " + this.getSexoStr() + "\n";
+        texto += "TIPO: " + this.getTipoStr();
         return texto;
     };
     Personaje.prototype.getAtributos = function () {
-        return ["id", "nombre", "apellido", "edad", "casa", "traidor"];
+        return ["id", "nombre", "apellido", "email", "edad", "sexo", "tipo"];
     };
     return Personaje;
 }());

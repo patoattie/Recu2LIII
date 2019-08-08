@@ -106,13 +106,13 @@ class App
     
         if(storage == null || storage[0] == undefined) //Si el servidor no trae nada creo la estructura vacía.
         {
-            personajes[0] = new Personaje(); //{"id":null,"nombre":null,"apellido":null,"edad":null,"casa":null,"esTraidor":null};
+            personajes[0] = new Personaje();
         }
         else
         {
             for(let i:number = 0; i < storage.length; i++)
             {
-                personajes[i] = new Personaje(storage[i]["id"], storage[i]["nombre"], storage[i]["apellido"], storage[i]["edad"], storage[i]["casa"], storage[i]["esTraidor"]);
+                personajes[i] = new Personaje(storage[i]["id"], storage[i]["nombre"], storage[i]["apellido"], storage[i]["email"], storage[i]["edad"], storage[i]["sexo"], storage[i]["tipo"]);
             }
         }
     
@@ -122,7 +122,7 @@ class App
     public static cargarPersonajeSeleccionado():Personaje
     {
         let storage:Personaje = JSON.parse(localStorage.getItem("personajeSeleccionado"));
-        let personajeSeleccionado:Personaje = new Personaje(storage["id"], storage["nombre"], storage["apellido"], storage["edad"], storage["casa"], storage["esTraidor"]);
+        let personajeSeleccionado:Personaje = new Personaje(storage["id"], storage["nombre"], storage["apellido"], storage["email"], storage["edad"], storage["sexo"], storage["tipo"]);
     
         return personajeSeleccionado;
     }
@@ -215,105 +215,134 @@ class App
         $("#infoForm").addClass("container");
         $("#infoForm").append("<form id=formularioPersonajes>");
         let formulario:JQuery<HTMLElement> = $("#formularioPersonajes")
-        formulario.attr("action", "#");
+        //formulario.attr("action", "#");
         formulario.css("display", "none");
+
+        formulario.on("submit", function(event)
+        {
+            event.preventDefault();
+
+            if($("#btnAgregar").css("display") !== "none")
+            {
+                App.opcionAgregarPersonaje();
+            }
+            else if($("#btnModificar").css("display") !== "none")
+            {
+                App.opcionModificarPersonaje();
+            }
+        });
 
         //for(let atributo in personajes[0].getAtributos())
         personajes[0].getAtributos().forEach(function(value:string):void
         {
             switch(value)
             {
-                case "casa":
-                    formulario.append("<fieldset id=grupoCasa>");
-                    //grupo.append("<div id=grupoCasa>");
-                    let grupoCasa:JQuery<HTMLElement> = $("#grupoCasa");
-                    grupoCasa.addClass("form-group");
+                case "sexo":
+                    formulario.append("<fieldset id=grupoSexo>");
+                    //grupo.append("<div id=grupoSexo>");
+                    let grupoSexo:JQuery<HTMLElement> = $("#grupoSexo");
+                    grupoSexo.addClass("form-group");
 
-                    grupoCasa.append("<div id=grupoCasa2>");
-                    let grupoCasa2:JQuery<HTMLElement> = $("#grupoCasa2");
-                    grupoCasa2.addClass("row");
+                    grupoSexo.append("<div id=grupoSexo2>");
+                    let grupoSexo2:JQuery<HTMLElement> = $("#grupoSexo2");
+                    grupoSexo2.addClass("row");
 
-                    //grupoCasa.append("<legend id=leyendaCasa>");
-                    //grupoCasa.append("<h5 id=leyendaCasa>");
-                    grupoCasa2.append("<legend id=leyendaCasa>");
-                    let leyendaCasa:JQuery<HTMLElement> = $("#leyendaCasa");
-                    leyendaCasa.addClass("col-form-label col-sm-2 pt-0");
-                    leyendaCasa.text("Casa");
+                    //grupoSexo.append("<legend id=leyendaSexo>");
+                    //grupoSexo.append("<h5 id=leyendaSexo>");
+                    grupoSexo2.append("<legend id=leyendaSexo>");
+                    let leyendaSexo:JQuery<HTMLElement> = $("#leyendaSexo");
+                    leyendaSexo.addClass("col-form-label col-sm-2 pt-0");
+                    leyendaSexo.text("Sexo");
 
-                    grupoCasa2.append("<div id=grupoCasa3>");
-                    let grupoCasa3:JQuery<HTMLElement> = $("#grupoCasa3");
-                    grupoCasa3.addClass("col-sm-10");
+                    grupoSexo2.append("<div id=grupoSexo3>");
+                    let grupoSexo3:JQuery<HTMLElement> = $("#grupoSexo3");
+                    grupoSexo3.addClass("col-sm-10");
 
-                    grupoCasa.addClass("grupoInterno");
+                    grupoSexo.addClass("grupoInterno");
 
-                    for(let unaCasa in ECasa)
+                    for(let unSexo in ESexo)
                     {
-                        if(isNaN(Number(unaCasa))) //Para que no traiga los índices
+                        if(isNaN(Number(unSexo))) //Para que no traiga los índices
                         {
-                            grupoCasa3.append("<div id=grupoCasa" + unaCasa + ">");
-                            let grupoCasa4:JQuery<HTMLElement> = $("#grupoCasa" + unaCasa);
-                            grupoCasa4.addClass("form-check");
-                            grupoCasa4.append("<input id=opt" + unaCasa + ">");
-                            let optButton:JQuery<HTMLElement> = $("#opt" + unaCasa);
-                            grupoCasa4.append("<label id=etiqueta" + unaCasa + ">");
+                            grupoSexo3.append("<div id=grupoSexo" + unSexo + ">");
+                            let grupoSexo4:JQuery<HTMLElement> = $("#grupoSexo" + unSexo);
+                            grupoSexo4.addClass("form-check");
+                            grupoSexo4.append("<input id=opt" + unSexo + ">");
+                            let optButton:JQuery<HTMLElement> = $("#opt" + unSexo);
+                            grupoSexo4.append("<label id=etiqueta" + unSexo + ">");
 
-                            let etiquetaCasa:JQuery<HTMLElement> = $("#etiqueta" + unaCasa);
-                            etiquetaCasa.attr("for", "opt" + unaCasa);
-                            etiquetaCasa.text(unaCasa);
-                            //etiquetaCasa.addClass("form-check");
-                            etiquetaCasa.addClass("form-check-label");
-                            //etiquetaCasa.append("<input id=opt" + unaCasa + ">");
-                            //let optButton:JQuery<HTMLElement> = $("#opt" + unaCasa);
+                            let etiquetaSexo:JQuery<HTMLElement> = $("#etiqueta" + unSexo);
+                            etiquetaSexo.attr("for", "opt" + unSexo);
+                            etiquetaSexo.text(unSexo);
+                            //etiquetaSexo.addClass("form-check");
+                            etiquetaSexo.addClass("form-check-label");
+                            //etiquetaSexo.append("<input id=opt" + unSexo + ">");
+                            //let optButton:JQuery<HTMLElement> = $("#opt" + unSexo);
 
                             optButton.attr("type", "radio");
-                            optButton.attr("name", "casa");
-                            optButton.attr("value", unaCasa);
+                            optButton.attr("name", "sexo");
+                            optButton.attr("value", unSexo);
                             optButton.addClass("form-check-input");
-                            //optButton.text(" " + unaCasa);
+                            //optButton.text(" " + unSexo);
 
-                            //grupoCasa.append("<br>");
+                            //grupoSexo.append("<br>");
                         }
                     }
 
                     break;
 
-                case "traidor":
-                    //formulario.append("<fieldset id=grupoTraidor>");
-                    formulario.append("<div id=grupoTraidor>");
-                    let grupoTraidor:JQuery<HTMLElement> = $("#grupoTraidor");
-                    grupoTraidor.addClass("form-group row");
+                case "tipo":
+                    formulario.append("<fieldset id=grupoTipo>");
+                    //grupo.append("<div id=grupoTipo>");
+                    let grupoTipo:JQuery<HTMLElement> = $("#grupoTipo");
+                    grupoTipo.addClass("form-group");
 
-                    grupoTraidor.append("<div id=grupoTraidor1>");
-                    let grupoTraidor1:JQuery<HTMLElement> = $("#grupoTraidor1");
-                    grupoTraidor1.addClass("col-sm-2");
-                    grupoTraidor1.text("Es traidor");
+                    grupoTipo.append("<div id=grupoTipo2>");
+                    let grupoTipo2:JQuery<HTMLElement> = $("#grupoTipo2");
+                    grupoTipo2.addClass("row");
 
-                    grupoTraidor.append("<div id=grupoTraidor2>");
-                    let grupoTraidor2:JQuery<HTMLElement> = $("#grupoTraidor2");
-                    grupoTraidor2.addClass("col-sm-10");
+                    //grupoTipo.append("<legend id=leyendaTipo>");
+                    //grupoTipo.append("<h5 id=leyendaTipo>");
+                    grupoTipo2.append("<legend id=leyendaTipo>");
+                    let leyendaTipo:JQuery<HTMLElement> = $("#leyendaTipo");
+                    leyendaTipo.addClass("col-form-label col-sm-2 pt-0");
+                    leyendaTipo.text("Tipo");
 
-                    grupoTraidor2.append("<div id=grupoTraidor3>");
-                    let grupoTraidor3:JQuery<HTMLElement> = $("#grupoTraidor3");
-                    grupoTraidor3.addClass("form-check");
+                    grupoTipo2.append("<div id=grupoTipo3>");
+                    let grupoTipo3:JQuery<HTMLElement> = $("#grupoTipo3");
+                    grupoTipo3.addClass("col-sm-10");
 
-                    grupoTraidor3.append("<input id=chkTraidor>");
-                    let chkTraidor:JQuery<HTMLElement> = $("#chkTraidor");
-                    grupoTraidor3.append("<label id=etiquetaTraidor>");
-                    let etiquetaTraidor:JQuery<HTMLElement> = $("#etiquetaTraidor");
-                    //etiquetaTraidor.append("<input id=chkTraidor>");
-                    //let chkTraidor:JQuery<HTMLElement> = $("#chkTraidor");
+                    grupoTipo.addClass("grupoInterno");
 
-                    grupoTraidor.addClass("grupoInterno");
+                    for(let unTipo in ETipo)
+                    {
+                        if(isNaN(Number(unTipo))) //Para que no traiga los índices
+                        {
+                            grupoTipo3.append("<div id=grupoTipo" + unTipo + ">");
+                            let grupoTipo4:JQuery<HTMLElement> = $("#grupoTipo" + unTipo);
+                            grupoTipo4.addClass("form-check");
+                            grupoTipo4.append("<input id=opt" + unTipo + ">");
+                            let optButton:JQuery<HTMLElement> = $("#opt" + unTipo);
+                            grupoTipo4.append("<label id=etiqueta" + unTipo + ">");
 
-                    chkTraidor.attr("type", "checkbox");
-                    //chkTraidor.attr("name", "traidor");
-                    //chkTraidor.attr("value", "traidor");
-                    chkTraidor.addClass("form-check-input");
-                    chkTraidor.text("Es Traidor");
+                            let etiquetaTipo:JQuery<HTMLElement> = $("#etiqueta" + unTipo);
+                            etiquetaTipo.attr("for", "opt" + unTipo);
+                            etiquetaTipo.text(unTipo);
+                            //etiquetaTipo.addClass("form-check");
+                            etiquetaTipo.addClass("form-check-label");
+                            //etiquetaTipo.append("<input id=opt" + unTipo + ">");
+                            //let optButton:JQuery<HTMLElement> = $("#opt" + unTipo);
 
-                    etiquetaTraidor.attr("for", "chkTraidor");
-                    //etiquetaTraidor.text("Es Traidor");
-        
+                            optButton.attr("type", "radio");
+                            optButton.attr("name", "tipo");
+                            optButton.attr("value", unTipo);
+                            optButton.addClass("form-check-input");
+                            //optButton.text(" " + unTipo);
+
+                            //grupoTipo.append("<br>");
+                        }
+                    }
+
                     break;
 
                 default:
@@ -345,7 +374,15 @@ class App
                     grupoInput.append("<input id=txt" + atributoCapitalizado + ">");
                     let cuadroTexto:JQuery<HTMLElement> = $("#txt" + atributoCapitalizado);
 
-                    cuadroTexto.attr("type", "text");
+                    if(value === "email")
+                    {
+                        cuadroTexto.attr("type", "email");
+                        cuadroTexto.prop("required", true);
+                    }
+                    else
+                    {
+                        cuadroTexto.attr("type", "text");
+                    }
                     cuadroTexto.attr("placeholder", "Ingrese " + value);
                     cuadroTexto.addClass("form-control");
 
@@ -358,41 +395,41 @@ class App
             }
         });
 
-        formulario.append("<div id=grupoButton>");
+        /*formulario.append("<div id=grupoButton>");
         let grupoButton:JQuery<HTMLElement> = $("#grupoButton");
-        grupoButton.addClass("form-group row");
+        grupoButton.addClass("form-group row");*/
 
-        grupoButton.append("<button id=btnAgregar>");
+        formulario.append("<button id=btnAgregar>");
         let btnAgregar:JQuery<HTMLElement> = $("#btnAgregar");
-        grupoButton.append("<button id=btnModificar>");
+        formulario.append("<button id=btnModificar>");
         let btnModificar:JQuery<HTMLElement> = $("#btnModificar");
-        grupoButton.append("<button id=btnBorrar>");
+        formulario.append("<button id=btnBorrar>");
         let btnBorrar:JQuery<HTMLElement> = $("#btnBorrar");
-        grupoButton.append("<button id=btnCancelar>");
+        formulario.append("<button id=btnCancelar>");
         let btnCancelar:JQuery<HTMLElement> = $("#btnCancelar");
 
-        btnAgregar.attr("type", "button");
-        //btnAgregar.val("Agregar");
+        btnAgregar.attr("type", "submit");
         btnAgregar.text("Agregar");
         btnAgregar.addClass("btn btn-primary");
-        btnAgregar.on("click", App.opcionAgregarPersonaje);
+        btnAgregar.css("margin", "2px");
+        //btnAgregar.on("click", App.opcionAgregarPersonaje);
 
-        btnModificar.attr("type", "button");
-        //btnModificar.val("Modificar");
+        btnModificar.attr("type", "submit");
         btnModificar.text("Modificar");
         btnModificar.addClass("btn btn-primary");
-        btnModificar.on("click", App.opcionModificarPersonaje);
+        btnModificar.css("margin", "2px");
+        //btnModificar.on("click", App.opcionModificarPersonaje);
 
         btnBorrar.attr("type", "button");
-        //btnBorrar.val("Borrar");
         btnBorrar.text("Borrar");
         btnBorrar.addClass("btn btn-danger");
+        btnBorrar.css("margin", "2px");
         btnBorrar.on("click", App.opcionBorrarPersonaje);
 
         btnCancelar.attr("type", "button");
-        //btnCancelar.val("Cancelar");
         btnCancelar.text("Cancelar");
         btnCancelar.addClass("btn btn-secondary");
+        btnCancelar.css("margin", "2px");
         btnCancelar.on("click", App.ocultarFormulario);
     }
 
@@ -425,71 +462,97 @@ class App
 
             switch(value)
             {
-                case "casa":
+                case "sexo":
                     if(personajeSeleccionado !== undefined) //Modificar o Borrar
                     {
-                        for(let unaCasa in ECasa)
+                        for(let unSexo in ESexo)
                         {
-                            if(isNaN(Number(unaCasa)))
+                            if(isNaN(Number(unSexo)))
                             {
-                                if(unaCasa == personajeSeleccionado.getCasa())
+                                if(unSexo == personajeSeleccionado.getSexo())
                                 {
-                                    $("#opt" + unaCasa).prop("checked", true);
+                                    $("#opt" + unSexo).prop("checked", true);
                                 }
                                 else
                                 {
-                                    $("#opt" + unaCasa).prop("checked", false);
+                                    $("#opt" + unSexo).prop("checked", false);
                                 }
                             }
                         }
                     }
                     else //Agregar
                     {
-                        for(let unaCasa in ECasa)
+                        for(let unSexo in ESexo)
                         {
-                            if(isNaN(Number(unaCasa)))
+                            if(isNaN(Number(unSexo)))
                             {
-                                if(unaCasa == ECasa.Stark)
+                                if(unSexo == ESexo.Mujer)
                                 {
-                                    $("#opt" + unaCasa).prop("checked", true);
+                                    $("#opt" + unSexo).prop("checked", true);
                                 }
                                 else
                                 {
-                                    $("#opt" + unaCasa).prop("checked", false);
+                                    $("#opt" + unSexo).prop("checked", false);
                                 }
                             }
                         }
                     }
                     break;
                     
-                    case "traidor":
-                        if(personajeSeleccionado !== undefined)
+                case "tipo":
+                    if(personajeSeleccionado !== undefined) //Modificar o Borrar
+                    {
+                        for(let unTipo in ETipo)
                         {
-                            $("#chkTraidor").prop("checked", personajeSeleccionado.getDinamico(value));
+                            if(isNaN(Number(unTipo)))
+                            {
+                                if(unTipo == personajeSeleccionado.getTipo())
+                                {
+                                    $("#opt" + unTipo).prop("checked", true);
+                                }
+                                else
+                                {
+                                    $("#opt" + unTipo).prop("checked", false);
+                                }
+                            }
+                        }
+                    }
+                    else //Agregar
+                    {
+                        for(let unTipo in ETipo)
+                        {
+                            if(isNaN(Number(unTipo)))
+                            {
+                                if(unTipo == ETipo.Diputado)
+                                {
+                                    $("#opt" + unTipo).prop("checked", true);
+                                }
+                                else
+                                {
+                                    $("#opt" + unTipo).prop("checked", false);
+                                }
+                            }
+                        }
+                    }
+                    break;
+                    
+                default:
+                    if(personajeSeleccionado !== undefined)
+                    {
+                        $("#txt" + atributoCapitalizado).val(personajeSeleccionado.getDinamico(value));
+                    }
+                    else
+                    {
+                        if(value === "id")
+                        {
+                            $("#txt" + atributoCapitalizado).val(Personaje.getProximoId());
                         }
                         else
                         {
-                            $("#chkTraidor").prop("checked", false);
+                            $("#txt" + atributoCapitalizado).val("");
                         }
-                        break;
-                        
-                    default:
-                        if(personajeSeleccionado !== undefined)
-                        {
-                            $("#txt" + atributoCapitalizado).val(personajeSeleccionado.getDinamico(value));
-                        }
-                        else
-                        {
-                            if(value === "id")
-                            {
-                                $("#txt" + atributoCapitalizado).val(Personaje.getProximoId());
-                            }
-                            else
-                            {
-                                $("#txt" + atributoCapitalizado).val("");
-                            }
-                        }
-                        break;
+                    }
+                    break;
             }
         });
     }
@@ -552,24 +615,8 @@ class App
                 //filaDetalle.append("<td>");
                 //columna = filaDetalle.children("td");
                 //columna.attr("class", value);
-                if(value == "traidor")
-                {
-                    if(datos[i].getEsTraidor())
-                    {
-                        filaDetalle.append("<td id=ColumnaDetalle" + value + datos[i].getId() + ">Si");
-                        //filaDetalle.append("<div id=ColumnaDetalle" + value + i + ">Si");
-                    }
-                    else
-                    {
-                        filaDetalle.append("<td id=ColumnaDetalle" + value + datos[i].getId() + ">No");
-                        //filaDetalle.append("<div id=ColumnaDetalle" + value + i + ">No");
-                    }
-                }
-                else
-                {
-                    filaDetalle.append("<td id=ColumnaDetalle" + value + datos[i].getId() + ">" + datos[i].getDinamico(value));
-                    //filaDetalle.append("<div id=ColumnaDetalle" + value + i + ">" + datos[i].getDinamico(value));
-                }
+                filaDetalle.append("<td id=ColumnaDetalle" + value + datos[i].getId() + ">" + datos[i].getDinamico(value));
+                //filaDetalle.append("<div id=ColumnaDetalle" + value + i + ">" + datos[i].getDinamico(value));
                 //columna = filaDetalle.children("td");
                 //$("#ColumnaDetalle" + value + i).attr("class", value);
                 $("#ColumnaDetalle" + value + datos[i].getId()).addClass(value);
@@ -605,16 +652,8 @@ class App
         //Recorro las columnas de la fila seleccionada, guardando un atributo por columna en personajeSeleccionado.
         filaActual.children().each(function()
         {
-            if($(this).attr("class") == "traidor")
-            {
-                //personajeSeleccionado[$(this).attr("class")] = ($(this).text() == "Si");
-                personajeSeleccionado.setEsTraidorStr($(this).text());
-            }
-            else
-            {
-                //personajeSeleccionado[$(this).attr("class")] = $(this).text();
-                personajeSeleccionado.setDinamico($(this).attr("class"), $(this).text());
-            }
+            //personajeSeleccionado[$(this).attr("class")] = $(this).text();
+            personajeSeleccionado.setDinamico($(this).attr("class"), $(this).text());
         });
 
         localStorage.setItem("personajeSeleccionado", JSON.stringify(personajeSeleccionado));
@@ -743,23 +782,8 @@ class App
         //for(var i = 0; i < filaSeleccionada.children().length; i++)
         filaSeleccionada.children().each(function()
         {
-            if($(this).attr("class") == "traidor")
-            {
-                //if(datos[$(this).attr("class")])
-                if(datos.getDinamico($(this).attr("class")))
-                {
-                    $(this).text("Si");
-                }
-                else
-                {
-                    $(this).text("No");
-                }
-            }
-            else
-            {
-                //$(this).text(datos[$(this).attr("class")]);
-                $(this).text(datos.getDinamico($(this).attr("class")));
-            }
+            //$(this).text(datos[$(this).attr("class")]);
+            $(this).text(datos.getDinamico($(this).attr("class")));
         });
     }
 
@@ -773,12 +797,13 @@ class App
         {
             switch(value)
             {
-                case "casa":
-                    let valor:string = String($('input[name="casa"]:checked').val());
-                    personaje.setCasaStr(valor);
+                case "sexo":
+                    let valor:string = String($('input[name="sexo"]:checked').val());
+                    personaje.setSexoStr(valor);
                     break;
-                case "traidor":
-                    personaje.setEsTraidor($("#chkTraidor").prop("checked"));
+                case "tipo":
+                    let valor2:string = String($('input[name="tipo"]:checked').val());
+                    personaje.setTipoStr(valor2);
                     break;
                 default:
                     let atributoCapitalizado:string = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase(); //Primer letra en mayuscula, resto minuscula

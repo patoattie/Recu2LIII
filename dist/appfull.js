@@ -1,24 +1,28 @@
-var ECasa;
-(function (ECasa) {
-    ECasa["Stark"] = "Stark";
-    ECasa["Targaryen"] = "Targaryen";
-    ECasa["Lannister"] = "Lannister";
-})(ECasa || (ECasa = {}));
+var ESexo;
+(function (ESexo) {
+    ESexo["Mujer"] = "Mujer";
+    ESexo["Hombre"] = "Hombre";
+})(ESexo || (ESexo = {}));
+var ETipo;
+(function (ETipo) {
+    ETipo["Diputado"] = "Diputado";
+    ETipo["Senador"] = "Senador";
+})(ETipo || (ETipo = {}));
 var Personaje = /** @class */ (function () {
-    function Personaje(id, nombre, apellido, edad, casa, esTraidor) {
-        this.id = id; //Personaje.getProximoId();
+    function Personaje(id, nombre, apellido, email, edad, sexo, tipo) {
+        this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
+        this.email = email;
         this.edad = edad;
-        this.casa = ECasa[casa];
-        this.esTraidor = esTraidor;
+        this.sexo = ESexo[sexo];
+        this.tipo = ETipo[tipo];
     }
     Personaje.getProximoId = function () {
         var proximoID = Number(localStorage.getItem("ID"));
         if (isNaN(proximoID) || proximoID == 0) {
             proximoID = 20000;
         }
-        //localStorage.setItem("ID", String(proximoID++));
         return proximoID;
     };
     Personaje.setProximoId = function () {
@@ -44,47 +48,41 @@ var Personaje = /** @class */ (function () {
     Personaje.prototype.setApellido = function (apellido) {
         this.apellido = apellido;
     };
+    Personaje.prototype.getEmail = function () {
+        return this.email;
+    };
+    Personaje.prototype.setEmail = function (email) {
+        this.email = email;
+    };
     Personaje.prototype.getEdad = function () {
         return this.edad;
     };
     Personaje.prototype.setEdad = function (edad) {
         this.edad = edad;
     };
-    Personaje.prototype.getCasa = function () {
-        return this.casa;
+    Personaje.prototype.getSexo = function () {
+        return this.sexo;
     };
-    Personaje.prototype.getCasaStr = function () {
-        return this.casa;
+    Personaje.prototype.getSexoStr = function () {
+        return this.sexo;
     };
-    Personaje.prototype.setCasa = function (casa) {
-        this.casa = casa;
+    Personaje.prototype.setSexo = function (sexo) {
+        this.sexo = sexo;
     };
-    Personaje.prototype.setCasaStr = function (casa) {
-        this.setCasa(ECasa[casa]);
+    Personaje.prototype.setSexoStr = function (sexo) {
+        this.setSexo(ESexo[sexo]);
     };
-    Personaje.prototype.getEsTraidor = function () {
-        return this.esTraidor;
+    Personaje.prototype.getTipo = function () {
+        return this.tipo;
     };
-    Personaje.prototype.setEsTraidor = function (esTraidor) {
-        this.esTraidor = esTraidor;
+    Personaje.prototype.getTipoStr = function () {
+        return this.tipo;
     };
-    Personaje.prototype.getEsTraidorStr = function () {
-        var retorno;
-        if (this.getEsTraidor()) {
-            retorno = "Si";
-        }
-        else {
-            retorno = "No";
-        }
-        return retorno;
+    Personaje.prototype.setTipo = function (tipo) {
+        this.tipo = tipo;
     };
-    Personaje.prototype.setEsTraidorStr = function (esTraidor) {
-        if (esTraidor == "Si") {
-            this.setEsTraidor(true);
-        }
-        else if (esTraidor == "No") {
-            this.setEsTraidor(false);
-        }
+    Personaje.prototype.setTipoStr = function (tipo) {
+        this.setTipo(ETipo[tipo]);
     };
     Personaje.prototype.getDinamico = function (atributo) {
         var valor;
@@ -98,14 +96,17 @@ var Personaje = /** @class */ (function () {
             case "apellido":
                 valor = this.getApellido();
                 break;
+            case "email":
+                valor = this.getEmail();
+                break;
             case "edad":
                 valor = this.getEdad();
                 break;
-            case "casa":
-                valor = this.getCasa();
+            case "sexo":
+                valor = this.getSexo();
                 break;
-            case "traidor":
-                valor = this.getEsTraidor();
+            case "tipo":
+                valor = this.getTipo();
                 break;
             default:
                 valor = null;
@@ -124,14 +125,17 @@ var Personaje = /** @class */ (function () {
             case "apellido":
                 this.setApellido(valor);
                 break;
+            case "email":
+                this.setEmail(valor);
+                break;
             case "edad":
                 this.setEdad(valor);
                 break;
-            case "casa":
-                this.setCasa(valor);
+            case "sexo":
+                this.setSexo(valor);
                 break;
-            case "traidor":
-                this.setEsTraidor(valor);
+            case "tipo":
+                this.setTipo(valor);
                 break;
         }
     };
@@ -140,13 +144,14 @@ var Personaje = /** @class */ (function () {
         texto += "ID: " + this.getId() + "\n";
         texto += "NOMBRE: " + this.getNombre() + "\n";
         texto += "APELLIDO: " + this.getApellido() + "\n";
+        texto += "E-MAIL: " + this.getEmail() + "\n";
         texto += "EDAD: " + this.getEdad() + "\n";
-        texto += "CASA: " + this.getCasa() + "\n";
-        texto += "ES TRAIDOR: " + this.getEsTraidorStr();
+        texto += "SEXO: " + this.getSexoStr() + "\n";
+        texto += "TIPO: " + this.getTipoStr();
         return texto;
     };
     Personaje.prototype.getAtributos = function () {
-        return ["id", "nombre", "apellido", "edad", "casa", "traidor"];
+        return ["id", "nombre", "apellido", "email", "edad", "sexo", "tipo"];
     };
     return Personaje;
 }());
@@ -229,18 +234,18 @@ var App = /** @class */ (function () {
         var storage = JSON.parse(localStorage.getItem("personajes"));
         if (storage == null || storage[0] == undefined) //Si el servidor no trae nada creo la estructura vacía.
          {
-            personajes[0] = new Personaje(); //{"id":null,"nombre":null,"apellido":null,"edad":null,"casa":null,"esTraidor":null};
+            personajes[0] = new Personaje();
         }
         else {
             for (var i = 0; i < storage.length; i++) {
-                personajes[i] = new Personaje(storage[i]["id"], storage[i]["nombre"], storage[i]["apellido"], storage[i]["edad"], storage[i]["casa"], storage[i]["esTraidor"]);
+                personajes[i] = new Personaje(storage[i]["id"], storage[i]["nombre"], storage[i]["apellido"], storage[i]["email"], storage[i]["edad"], storage[i]["sexo"], storage[i]["tipo"]);
             }
         }
         return personajes;
     };
     App.cargarPersonajeSeleccionado = function () {
         var storage = JSON.parse(localStorage.getItem("personajeSeleccionado"));
-        var personajeSeleccionado = new Personaje(storage["id"], storage["nombre"], storage["apellido"], storage["edad"], storage["casa"], storage["esTraidor"]);
+        var personajeSeleccionado = new Personaje(storage["id"], storage["nombre"], storage["apellido"], storage["email"], storage["edad"], storage["sexo"], storage["tipo"]);
         return personajeSeleccionado;
     };
     //Oculta la tabla de personajes, y muestra el formulario invocando la función pertinente
@@ -308,83 +313,105 @@ var App = /** @class */ (function () {
         $("#infoForm").addClass("container");
         $("#infoForm").append("<form id=formularioPersonajes>");
         var formulario = $("#formularioPersonajes");
-        formulario.attr("action", "#");
+        //formulario.attr("action", "#");
         formulario.css("display", "none");
+        formulario.on("submit", function (event) {
+            event.preventDefault();
+            if ($("#btnAgregar").css("display") !== "none") {
+                App.opcionAgregarPersonaje();
+            }
+            else if ($("#btnModificar").css("display") !== "none") {
+                App.opcionModificarPersonaje();
+            }
+        });
         //for(let atributo in personajes[0].getAtributos())
         personajes[0].getAtributos().forEach(function (value) {
             switch (value) {
-                case "casa":
-                    formulario.append("<fieldset id=grupoCasa>");
-                    //grupo.append("<div id=grupoCasa>");
-                    var grupoCasa = $("#grupoCasa");
-                    grupoCasa.addClass("form-group");
-                    grupoCasa.append("<div id=grupoCasa2>");
-                    var grupoCasa2 = $("#grupoCasa2");
-                    grupoCasa2.addClass("row");
-                    //grupoCasa.append("<legend id=leyendaCasa>");
-                    //grupoCasa.append("<h5 id=leyendaCasa>");
-                    grupoCasa2.append("<legend id=leyendaCasa>");
-                    var leyendaCasa = $("#leyendaCasa");
-                    leyendaCasa.addClass("col-form-label col-sm-2 pt-0");
-                    leyendaCasa.text("Casa");
-                    grupoCasa2.append("<div id=grupoCasa3>");
-                    var grupoCasa3 = $("#grupoCasa3");
-                    grupoCasa3.addClass("col-sm-10");
-                    grupoCasa.addClass("grupoInterno");
-                    for (var unaCasa in ECasa) {
-                        if (isNaN(Number(unaCasa))) //Para que no traiga los índices
+                case "sexo":
+                    formulario.append("<fieldset id=grupoSexo>");
+                    //grupo.append("<div id=grupoSexo>");
+                    var grupoSexo = $("#grupoSexo");
+                    grupoSexo.addClass("form-group");
+                    grupoSexo.append("<div id=grupoSexo2>");
+                    var grupoSexo2 = $("#grupoSexo2");
+                    grupoSexo2.addClass("row");
+                    //grupoSexo.append("<legend id=leyendaSexo>");
+                    //grupoSexo.append("<h5 id=leyendaSexo>");
+                    grupoSexo2.append("<legend id=leyendaSexo>");
+                    var leyendaSexo = $("#leyendaSexo");
+                    leyendaSexo.addClass("col-form-label col-sm-2 pt-0");
+                    leyendaSexo.text("Sexo");
+                    grupoSexo2.append("<div id=grupoSexo3>");
+                    var grupoSexo3 = $("#grupoSexo3");
+                    grupoSexo3.addClass("col-sm-10");
+                    grupoSexo.addClass("grupoInterno");
+                    for (var unSexo in ESexo) {
+                        if (isNaN(Number(unSexo))) //Para que no traiga los índices
                          {
-                            grupoCasa3.append("<div id=grupoCasa" + unaCasa + ">");
-                            var grupoCasa4 = $("#grupoCasa" + unaCasa);
-                            grupoCasa4.addClass("form-check");
-                            grupoCasa4.append("<input id=opt" + unaCasa + ">");
-                            var optButton = $("#opt" + unaCasa);
-                            grupoCasa4.append("<label id=etiqueta" + unaCasa + ">");
-                            var etiquetaCasa = $("#etiqueta" + unaCasa);
-                            etiquetaCasa.attr("for", "opt" + unaCasa);
-                            etiquetaCasa.text(unaCasa);
-                            //etiquetaCasa.addClass("form-check");
-                            etiquetaCasa.addClass("form-check-label");
-                            //etiquetaCasa.append("<input id=opt" + unaCasa + ">");
-                            //let optButton:JQuery<HTMLElement> = $("#opt" + unaCasa);
+                            grupoSexo3.append("<div id=grupoSexo" + unSexo + ">");
+                            var grupoSexo4 = $("#grupoSexo" + unSexo);
+                            grupoSexo4.addClass("form-check");
+                            grupoSexo4.append("<input id=opt" + unSexo + ">");
+                            var optButton = $("#opt" + unSexo);
+                            grupoSexo4.append("<label id=etiqueta" + unSexo + ">");
+                            var etiquetaSexo = $("#etiqueta" + unSexo);
+                            etiquetaSexo.attr("for", "opt" + unSexo);
+                            etiquetaSexo.text(unSexo);
+                            //etiquetaSexo.addClass("form-check");
+                            etiquetaSexo.addClass("form-check-label");
+                            //etiquetaSexo.append("<input id=opt" + unSexo + ">");
+                            //let optButton:JQuery<HTMLElement> = $("#opt" + unSexo);
                             optButton.attr("type", "radio");
-                            optButton.attr("name", "casa");
-                            optButton.attr("value", unaCasa);
+                            optButton.attr("name", "sexo");
+                            optButton.attr("value", unSexo);
                             optButton.addClass("form-check-input");
-                            //optButton.text(" " + unaCasa);
-                            //grupoCasa.append("<br>");
+                            //optButton.text(" " + unSexo);
+                            //grupoSexo.append("<br>");
                         }
                     }
                     break;
-                case "traidor":
-                    //formulario.append("<fieldset id=grupoTraidor>");
-                    formulario.append("<div id=grupoTraidor>");
-                    var grupoTraidor = $("#grupoTraidor");
-                    grupoTraidor.addClass("form-group row");
-                    grupoTraidor.append("<div id=grupoTraidor1>");
-                    var grupoTraidor1 = $("#grupoTraidor1");
-                    grupoTraidor1.addClass("col-sm-2");
-                    grupoTraidor1.text("Es traidor");
-                    grupoTraidor.append("<div id=grupoTraidor2>");
-                    var grupoTraidor2 = $("#grupoTraidor2");
-                    grupoTraidor2.addClass("col-sm-10");
-                    grupoTraidor2.append("<div id=grupoTraidor3>");
-                    var grupoTraidor3 = $("#grupoTraidor3");
-                    grupoTraidor3.addClass("form-check");
-                    grupoTraidor3.append("<input id=chkTraidor>");
-                    var chkTraidor = $("#chkTraidor");
-                    grupoTraidor3.append("<label id=etiquetaTraidor>");
-                    var etiquetaTraidor = $("#etiquetaTraidor");
-                    //etiquetaTraidor.append("<input id=chkTraidor>");
-                    //let chkTraidor:JQuery<HTMLElement> = $("#chkTraidor");
-                    grupoTraidor.addClass("grupoInterno");
-                    chkTraidor.attr("type", "checkbox");
-                    //chkTraidor.attr("name", "traidor");
-                    //chkTraidor.attr("value", "traidor");
-                    chkTraidor.addClass("form-check-input");
-                    chkTraidor.text("Es Traidor");
-                    etiquetaTraidor.attr("for", "chkTraidor");
-                    //etiquetaTraidor.text("Es Traidor");
+                case "tipo":
+                    formulario.append("<fieldset id=grupoTipo>");
+                    //grupo.append("<div id=grupoTipo>");
+                    var grupoTipo = $("#grupoTipo");
+                    grupoTipo.addClass("form-group");
+                    grupoTipo.append("<div id=grupoTipo2>");
+                    var grupoTipo2 = $("#grupoTipo2");
+                    grupoTipo2.addClass("row");
+                    //grupoTipo.append("<legend id=leyendaTipo>");
+                    //grupoTipo.append("<h5 id=leyendaTipo>");
+                    grupoTipo2.append("<legend id=leyendaTipo>");
+                    var leyendaTipo = $("#leyendaTipo");
+                    leyendaTipo.addClass("col-form-label col-sm-2 pt-0");
+                    leyendaTipo.text("Tipo");
+                    grupoTipo2.append("<div id=grupoTipo3>");
+                    var grupoTipo3 = $("#grupoTipo3");
+                    grupoTipo3.addClass("col-sm-10");
+                    grupoTipo.addClass("grupoInterno");
+                    for (var unTipo in ETipo) {
+                        if (isNaN(Number(unTipo))) //Para que no traiga los índices
+                         {
+                            grupoTipo3.append("<div id=grupoTipo" + unTipo + ">");
+                            var grupoTipo4 = $("#grupoTipo" + unTipo);
+                            grupoTipo4.addClass("form-check");
+                            grupoTipo4.append("<input id=opt" + unTipo + ">");
+                            var optButton = $("#opt" + unTipo);
+                            grupoTipo4.append("<label id=etiqueta" + unTipo + ">");
+                            var etiquetaTipo = $("#etiqueta" + unTipo);
+                            etiquetaTipo.attr("for", "opt" + unTipo);
+                            etiquetaTipo.text(unTipo);
+                            //etiquetaTipo.addClass("form-check");
+                            etiquetaTipo.addClass("form-check-label");
+                            //etiquetaTipo.append("<input id=opt" + unTipo + ">");
+                            //let optButton:JQuery<HTMLElement> = $("#opt" + unTipo);
+                            optButton.attr("type", "radio");
+                            optButton.attr("name", "tipo");
+                            optButton.attr("value", unTipo);
+                            optButton.addClass("form-check-input");
+                            //optButton.text(" " + unTipo);
+                            //grupoTipo.append("<br>");
+                        }
+                    }
                     break;
                 default:
                     //formulario.append("<fieldset id=grupo>");
@@ -408,7 +435,13 @@ var App = /** @class */ (function () {
                     grupoInput.addClass("col-sm-10");
                     grupoInput.append("<input id=txt" + atributoCapitalizado + ">");
                     var cuadroTexto = $("#txt" + atributoCapitalizado);
-                    cuadroTexto.attr("type", "text");
+                    if (value === "email") {
+                        cuadroTexto.attr("type", "email");
+                        cuadroTexto.prop("required", true);
+                    }
+                    else {
+                        cuadroTexto.attr("type", "text");
+                    }
                     cuadroTexto.attr("placeholder", "Ingrese " + value);
                     cuadroTexto.addClass("form-control");
                     if (value === "id") {
@@ -417,36 +450,36 @@ var App = /** @class */ (function () {
                     break;
             }
         });
-        formulario.append("<div id=grupoButton>");
-        var grupoButton = $("#grupoButton");
-        grupoButton.addClass("form-group row");
-        grupoButton.append("<button id=btnAgregar>");
+        /*formulario.append("<div id=grupoButton>");
+        let grupoButton:JQuery<HTMLElement> = $("#grupoButton");
+        grupoButton.addClass("form-group row");*/
+        formulario.append("<button id=btnAgregar>");
         var btnAgregar = $("#btnAgregar");
-        grupoButton.append("<button id=btnModificar>");
+        formulario.append("<button id=btnModificar>");
         var btnModificar = $("#btnModificar");
-        grupoButton.append("<button id=btnBorrar>");
+        formulario.append("<button id=btnBorrar>");
         var btnBorrar = $("#btnBorrar");
-        grupoButton.append("<button id=btnCancelar>");
+        formulario.append("<button id=btnCancelar>");
         var btnCancelar = $("#btnCancelar");
-        btnAgregar.attr("type", "button");
-        //btnAgregar.val("Agregar");
+        btnAgregar.attr("type", "submit");
         btnAgregar.text("Agregar");
         btnAgregar.addClass("btn btn-primary");
-        btnAgregar.on("click", App.opcionAgregarPersonaje);
-        btnModificar.attr("type", "button");
-        //btnModificar.val("Modificar");
+        btnAgregar.css("margin", "2px");
+        //btnAgregar.on("click", App.opcionAgregarPersonaje);
+        btnModificar.attr("type", "submit");
         btnModificar.text("Modificar");
         btnModificar.addClass("btn btn-primary");
-        btnModificar.on("click", App.opcionModificarPersonaje);
+        btnModificar.css("margin", "2px");
+        //btnModificar.on("click", App.opcionModificarPersonaje);
         btnBorrar.attr("type", "button");
-        //btnBorrar.val("Borrar");
         btnBorrar.text("Borrar");
         btnBorrar.addClass("btn btn-danger");
+        btnBorrar.css("margin", "2px");
         btnBorrar.on("click", App.opcionBorrarPersonaje);
         btnCancelar.attr("type", "button");
-        //btnCancelar.val("Cancelar");
         btnCancelar.text("Cancelar");
         btnCancelar.addClass("btn btn-secondary");
+        btnCancelar.css("margin", "2px");
         btnCancelar.on("click", App.ocultarFormulario);
     };
     //Arma el formulario de edición de personajes.
@@ -472,40 +505,60 @@ var App = /** @class */ (function () {
         personajes[0].getAtributos().forEach(function (value) {
             var atributoCapitalizado = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase(); //Primer letra en mayuscula, resto minuscula
             switch (value) {
-                case "casa":
+                case "sexo":
                     if (personajeSeleccionado !== undefined) //Modificar o Borrar
                      {
-                        for (var unaCasa in ECasa) {
-                            if (isNaN(Number(unaCasa))) {
-                                if (unaCasa == personajeSeleccionado.getCasa()) {
-                                    $("#opt" + unaCasa).prop("checked", true);
+                        for (var unSexo in ESexo) {
+                            if (isNaN(Number(unSexo))) {
+                                if (unSexo == personajeSeleccionado.getSexo()) {
+                                    $("#opt" + unSexo).prop("checked", true);
                                 }
                                 else {
-                                    $("#opt" + unaCasa).prop("checked", false);
+                                    $("#opt" + unSexo).prop("checked", false);
                                 }
                             }
                         }
                     }
                     else //Agregar
                      {
-                        for (var unaCasa in ECasa) {
-                            if (isNaN(Number(unaCasa))) {
-                                if (unaCasa == ECasa.Stark) {
-                                    $("#opt" + unaCasa).prop("checked", true);
+                        for (var unSexo in ESexo) {
+                            if (isNaN(Number(unSexo))) {
+                                if (unSexo == ESexo.Mujer) {
+                                    $("#opt" + unSexo).prop("checked", true);
                                 }
                                 else {
-                                    $("#opt" + unaCasa).prop("checked", false);
+                                    $("#opt" + unSexo).prop("checked", false);
                                 }
                             }
                         }
                     }
                     break;
-                case "traidor":
-                    if (personajeSeleccionado !== undefined) {
-                        $("#chkTraidor").prop("checked", personajeSeleccionado.getDinamico(value));
+                case "tipo":
+                    if (personajeSeleccionado !== undefined) //Modificar o Borrar
+                     {
+                        for (var unTipo in ETipo) {
+                            if (isNaN(Number(unTipo))) {
+                                if (unTipo == personajeSeleccionado.getTipo()) {
+                                    $("#opt" + unTipo).prop("checked", true);
+                                }
+                                else {
+                                    $("#opt" + unTipo).prop("checked", false);
+                                }
+                            }
+                        }
                     }
-                    else {
-                        $("#chkTraidor").prop("checked", false);
+                    else //Agregar
+                     {
+                        for (var unTipo in ETipo) {
+                            if (isNaN(Number(unTipo))) {
+                                if (unTipo == ETipo.Diputado) {
+                                    $("#opt" + unTipo).prop("checked", true);
+                                }
+                                else {
+                                    $("#opt" + unTipo).prop("checked", false);
+                                }
+                            }
+                        }
                     }
                     break;
                 default:
@@ -569,20 +622,8 @@ var App = /** @class */ (function () {
                 //filaDetalle.append("<td>");
                 //columna = filaDetalle.children("td");
                 //columna.attr("class", value);
-                if (value == "traidor") {
-                    if (datos[i].getEsTraidor()) {
-                        filaDetalle.append("<td id=ColumnaDetalle" + value + datos[i].getId() + ">Si");
-                        //filaDetalle.append("<div id=ColumnaDetalle" + value + i + ">Si");
-                    }
-                    else {
-                        filaDetalle.append("<td id=ColumnaDetalle" + value + datos[i].getId() + ">No");
-                        //filaDetalle.append("<div id=ColumnaDetalle" + value + i + ">No");
-                    }
-                }
-                else {
-                    filaDetalle.append("<td id=ColumnaDetalle" + value + datos[i].getId() + ">" + datos[i].getDinamico(value));
-                    //filaDetalle.append("<div id=ColumnaDetalle" + value + i + ">" + datos[i].getDinamico(value));
-                }
+                filaDetalle.append("<td id=ColumnaDetalle" + value + datos[i].getId() + ">" + datos[i].getDinamico(value));
+                //filaDetalle.append("<div id=ColumnaDetalle" + value + i + ">" + datos[i].getDinamico(value));
                 //columna = filaDetalle.children("td");
                 //$("#ColumnaDetalle" + value + i).attr("class", value);
                 $("#ColumnaDetalle" + value + datos[i].getId()).addClass(value);
@@ -614,14 +655,8 @@ var App = /** @class */ (function () {
         filaActual.addClass("table-primary");
         //Recorro las columnas de la fila seleccionada, guardando un atributo por columna en personajeSeleccionado.
         filaActual.children().each(function () {
-            if ($(this).attr("class") == "traidor") {
-                //personajeSeleccionado[$(this).attr("class")] = ($(this).text() == "Si");
-                personajeSeleccionado.setEsTraidorStr($(this).text());
-            }
-            else {
-                //personajeSeleccionado[$(this).attr("class")] = $(this).text();
-                personajeSeleccionado.setDinamico($(this).attr("class"), $(this).text());
-            }
+            //personajeSeleccionado[$(this).attr("class")] = $(this).text();
+            personajeSeleccionado.setDinamico($(this).attr("class"), $(this).text());
         });
         localStorage.setItem("personajeSeleccionado", JSON.stringify(personajeSeleccionado));
     };
@@ -705,19 +740,8 @@ var App = /** @class */ (function () {
         //Recorro las columnas de la fila seleccionada, guardando un atributo por columna en personajeSeleccionado.
         //for(var i = 0; i < filaSeleccionada.children().length; i++)
         filaSeleccionada.children().each(function () {
-            if ($(this).attr("class") == "traidor") {
-                //if(datos[$(this).attr("class")])
-                if (datos.getDinamico($(this).attr("class"))) {
-                    $(this).text("Si");
-                }
-                else {
-                    $(this).text("No");
-                }
-            }
-            else {
-                //$(this).text(datos[$(this).attr("class")]);
-                $(this).text(datos.getDinamico($(this).attr("class")));
-            }
+            //$(this).text(datos[$(this).attr("class")]);
+            $(this).text(datos.getDinamico($(this).attr("class")));
         });
     };
     //Crea un objeto JSON a partir de los datos del formulario
@@ -726,12 +750,13 @@ var App = /** @class */ (function () {
         //for(let atributo in personajes[0].getAtributos())
         personajes[0].getAtributos().forEach(function (value) {
             switch (value) {
-                case "casa":
-                    var valor = String($('input[name="casa"]:checked').val());
-                    personaje.setCasaStr(valor);
+                case "sexo":
+                    var valor = String($('input[name="sexo"]:checked').val());
+                    personaje.setSexoStr(valor);
                     break;
-                case "traidor":
-                    personaje.setEsTraidor($("#chkTraidor").prop("checked"));
+                case "tipo":
+                    var valor2 = String($('input[name="tipo"]:checked').val());
+                    personaje.setTipoStr(valor2);
                     break;
                 default:
                     var atributoCapitalizado = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase(); //Primer letra en mayuscula, resto minuscula
