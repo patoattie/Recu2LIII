@@ -1,80 +1,62 @@
-var Persona = (function () {
-    function Persona(id, nombre, apellido, email, edad, sexo, tipo) {
-        this.id = id;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.email = email;
-        this.edad = edad;
-        this.sexo = ESexo[sexo];
-        this.tipo = ELegislador[tipo];
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var Legislador = (function (_super) {
+    __extends(Legislador, _super);
+    function Legislador(id, nombre, apellido, email, edad, sexo, tipo) {
+        var _this = _super.call(this, nombre, apellido, edad, sexo) || this;
+        _this.id = id;
+        _this.email = email;
+        _this.tipo = ELegislador[tipo];
+        return _this;
     }
-    Persona.getProximoId = function () {
+    Legislador.getProximoId = function () {
         var proximoID = Number(localStorage.getItem("ID"));
         if (isNaN(proximoID) || proximoID == 0) {
             proximoID = 20000;
         }
         return proximoID;
     };
-    Persona.setProximoId = function () {
+    Legislador.prototype.getId = function () {
+        return this.id;
+    };
+    Legislador.prototype.setId = function (id) {
+        this.id = id;
+    };
+    Legislador.setProximoId = function () {
         var proximoID = this.getProximoId();
         proximoID++;
         localStorage.setItem("ID", String(proximoID));
     };
-    Persona.prototype.getId = function () {
-        return this.id;
-    };
-    Persona.prototype.setId = function (id) {
-        this.id = id;
-    };
-    Persona.prototype.getNombre = function () {
-        return this.nombre;
-    };
-    Persona.prototype.setNombre = function (nombre) {
-        this.nombre = nombre;
-    };
-    Persona.prototype.getApellido = function () {
-        return this.apellido;
-    };
-    Persona.prototype.setApellido = function (apellido) {
-        this.apellido = apellido;
-    };
-    Persona.prototype.getEmail = function () {
+    Legislador.prototype.getEmail = function () {
         return this.email;
     };
-    Persona.prototype.setEmail = function (email) {
+    Legislador.prototype.setEmail = function (email) {
         this.email = email;
     };
-    Persona.prototype.getEdad = function () {
-        return this.edad;
-    };
-    Persona.prototype.setEdad = function (edad) {
-        this.edad = edad;
-    };
-    Persona.prototype.getSexo = function () {
-        return this.sexo;
-    };
-    Persona.prototype.getSexoStr = function () {
-        return this.sexo;
-    };
-    Persona.prototype.setSexo = function (sexo) {
-        this.sexo = sexo;
-    };
-    Persona.prototype.setSexoStr = function (sexo) {
-        this.setSexo(ESexo[sexo]);
-    };
-    Persona.prototype.getTipo = function () {
+    Legislador.prototype.getTipo = function () {
         return this.tipo;
     };
-    Persona.prototype.getTipoStr = function () {
+    Legislador.prototype.getTipoStr = function () {
         return this.tipo;
     };
-    Persona.prototype.setTipo = function (tipo) {
+    Legislador.prototype.setTipo = function (tipo) {
         this.tipo = tipo;
     };
-    Persona.prototype.setTipoStr = function (tipo) {
+    Legislador.prototype.setTipoStr = function (tipo) {
         this.setTipo(ELegislador[tipo]);
     };
-    Persona.prototype.getDinamico = function (atributo) {
+    Legislador.prototype.getDinamico = function (atributo) {
         var valor;
         switch (atributo) {
             case "id":
@@ -104,7 +86,7 @@ var Persona = (function () {
         }
         return valor;
     };
-    Persona.prototype.setDinamico = function (atributo, valor) {
+    Legislador.prototype.setDinamico = function (atributo, valor) {
         switch (atributo) {
             case "id":
                 this.setId(valor);
@@ -129,7 +111,7 @@ var Persona = (function () {
                 break;
         }
     };
-    Persona.prototype.toString = function () {
+    Legislador.prototype.toString = function () {
         var texto = "";
         texto += "ID: " + this.getId() + "\n";
         texto += "NOMBRE: " + this.getNombre() + "\n";
@@ -140,8 +122,8 @@ var Persona = (function () {
         texto += "TIPO: " + this.getTipoStr();
         return texto;
     };
-    Persona.prototype.getAtributos = function () {
+    Legislador.prototype.getAtributos = function () {
         return ["id", "nombre", "apellido", "email", "edad", "sexo", "tipo"];
     };
-    return Persona;
-}());
+    return Legislador;
+}(Persona));

@@ -1,90 +1,159 @@
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var ESexo;
 (function (ESexo) {
     ESexo["Mujer"] = "Mujer";
     ESexo["Hombre"] = "Hombre";
 })(ESexo || (ESexo = {}));
-var ETipo;
-(function (ETipo) {
-    ETipo["Diputado"] = "Diputado";
-    ETipo["Senador"] = "Senador";
-})(ETipo || (ETipo = {}));
-var Personaje = /** @class */ (function () {
-    function Personaje(id, nombre, apellido, email, edad, sexo, tipo) {
-        this.id = id;
+var ELegislador;
+(function (ELegislador) {
+    ELegislador["Diputado"] = "Diputado";
+    ELegislador["Senador"] = "Senador";
+})(ELegislador || (ELegislador = {}));
+var Persona = /** @class */ (function () {
+    function Persona(nombre, apellido, edad, sexo) {
         this.nombre = nombre;
         this.apellido = apellido;
-        this.email = email;
         this.edad = edad;
         this.sexo = ESexo[sexo];
-        this.tipo = ETipo[tipo];
     }
-    Personaje.getProximoId = function () {
+    Persona.prototype.getNombre = function () {
+        return this.nombre;
+    };
+    Persona.prototype.setNombre = function (nombre) {
+        this.nombre = nombre;
+    };
+    Persona.prototype.getApellido = function () {
+        return this.apellido;
+    };
+    Persona.prototype.setApellido = function (apellido) {
+        this.apellido = apellido;
+    };
+    Persona.prototype.getEdad = function () {
+        return this.edad;
+    };
+    Persona.prototype.setEdad = function (edad) {
+        this.edad = edad;
+    };
+    Persona.prototype.getSexo = function () {
+        return this.sexo;
+    };
+    Persona.prototype.getSexoStr = function () {
+        return this.sexo;
+    };
+    Persona.prototype.setSexo = function (sexo) {
+        this.sexo = sexo;
+    };
+    Persona.prototype.setSexoStr = function (sexo) {
+        this.setSexo(ESexo[sexo]);
+    };
+    Persona.prototype.getDinamico = function (atributo) {
+        var valor;
+        switch (atributo) {
+            case "nombre":
+                valor = this.getNombre();
+                break;
+            case "apellido":
+                valor = this.getApellido();
+                break;
+            case "edad":
+                valor = this.getEdad();
+                break;
+            case "sexo":
+                valor = this.getSexo();
+                break;
+            default:
+                valor = null;
+                break;
+        }
+        return valor;
+    };
+    Persona.prototype.setDinamico = function (atributo, valor) {
+        switch (atributo) {
+            case "nombre":
+                this.setNombre(valor);
+                break;
+            case "apellido":
+                this.setApellido(valor);
+                break;
+            case "edad":
+                this.setEdad(valor);
+                break;
+            case "sexo":
+                this.setSexo(valor);
+                break;
+        }
+    };
+    Persona.prototype.toString = function () {
+        var texto = "";
+        texto += "NOMBRE: " + this.getNombre() + "\n";
+        texto += "APELLIDO: " + this.getApellido() + "\n";
+        texto += "EDAD: " + this.getEdad() + "\n";
+        texto += "SEXO: " + this.getSexoStr();
+        return texto;
+    };
+    Persona.prototype.getAtributos = function () {
+        return ["nombre", "apellido", "edad", "sexo"];
+    };
+    return Persona;
+}());
+var Legislador = /** @class */ (function (_super) {
+    __extends(Legislador, _super);
+    function Legislador(id, nombre, apellido, email, edad, sexo, tipo) {
+        var _this = _super.call(this, nombre, apellido, edad, sexo) || this;
+        _this.id = id;
+        _this.email = email;
+        _this.tipo = ELegislador[tipo];
+        return _this;
+    }
+    Legislador.getProximoId = function () {
         var proximoID = Number(localStorage.getItem("ID"));
         if (isNaN(proximoID) || proximoID == 0) {
             proximoID = 20000;
         }
         return proximoID;
     };
-    Personaje.setProximoId = function () {
+    Legislador.prototype.getId = function () {
+        return this.id;
+    };
+    Legislador.prototype.setId = function (id) {
+        this.id = id;
+    };
+    Legislador.setProximoId = function () {
         var proximoID = this.getProximoId();
         proximoID++;
         localStorage.setItem("ID", String(proximoID));
     };
-    Personaje.prototype.getId = function () {
-        return this.id;
-    };
-    Personaje.prototype.setId = function (id) {
-        this.id = id;
-    };
-    Personaje.prototype.getNombre = function () {
-        return this.nombre;
-    };
-    Personaje.prototype.setNombre = function (nombre) {
-        this.nombre = nombre;
-    };
-    Personaje.prototype.getApellido = function () {
-        return this.apellido;
-    };
-    Personaje.prototype.setApellido = function (apellido) {
-        this.apellido = apellido;
-    };
-    Personaje.prototype.getEmail = function () {
+    Legislador.prototype.getEmail = function () {
         return this.email;
     };
-    Personaje.prototype.setEmail = function (email) {
+    Legislador.prototype.setEmail = function (email) {
         this.email = email;
     };
-    Personaje.prototype.getEdad = function () {
-        return this.edad;
-    };
-    Personaje.prototype.setEdad = function (edad) {
-        this.edad = edad;
-    };
-    Personaje.prototype.getSexo = function () {
-        return this.sexo;
-    };
-    Personaje.prototype.getSexoStr = function () {
-        return this.sexo;
-    };
-    Personaje.prototype.setSexo = function (sexo) {
-        this.sexo = sexo;
-    };
-    Personaje.prototype.setSexoStr = function (sexo) {
-        this.setSexo(ESexo[sexo]);
-    };
-    Personaje.prototype.getTipo = function () {
+    Legislador.prototype.getTipo = function () {
         return this.tipo;
     };
-    Personaje.prototype.getTipoStr = function () {
+    Legislador.prototype.getTipoStr = function () {
         return this.tipo;
     };
-    Personaje.prototype.setTipo = function (tipo) {
+    Legislador.prototype.setTipo = function (tipo) {
         this.tipo = tipo;
     };
-    Personaje.prototype.setTipoStr = function (tipo) {
-        this.setTipo(ETipo[tipo]);
+    Legislador.prototype.setTipoStr = function (tipo) {
+        this.setTipo(ELegislador[tipo]);
     };
-    Personaje.prototype.getDinamico = function (atributo) {
+    Legislador.prototype.getDinamico = function (atributo) {
         var valor;
         switch (atributo) {
             case "id":
@@ -114,7 +183,7 @@ var Personaje = /** @class */ (function () {
         }
         return valor;
     };
-    Personaje.prototype.setDinamico = function (atributo, valor) {
+    Legislador.prototype.setDinamico = function (atributo, valor) {
         switch (atributo) {
             case "id":
                 this.setId(valor);
@@ -139,7 +208,7 @@ var Personaje = /** @class */ (function () {
                 break;
         }
     };
-    Personaje.prototype.toString = function () {
+    Legislador.prototype.toString = function () {
         var texto = "";
         texto += "ID: " + this.getId() + "\n";
         texto += "NOMBRE: " + this.getNombre() + "\n";
@@ -150,11 +219,11 @@ var Personaje = /** @class */ (function () {
         texto += "TIPO: " + this.getTipoStr();
         return texto;
     };
-    Personaje.prototype.getAtributos = function () {
+    Legislador.prototype.getAtributos = function () {
         return ["id", "nombre", "apellido", "email", "edad", "sexo", "tipo"];
     };
-    return Personaje;
-}());
+    return Legislador;
+}(Persona));
 //npm i @types/jquery
 //import $ from "jquery";
 window.onload = function () {
@@ -210,6 +279,7 @@ var App = /** @class */ (function () {
         //$("#btnAltaPersonaje").css("pointer-events", "auto");
         App.habilitarMenu($("#btnAltaPersonaje"));
         App.deshabilitarMenu($("#btnEditarPersonaje"));
+        console.log("traerPersonajes");
     };
     App.activarMenu = function (elemento) {
         elemento.parent().addClass("active");
@@ -235,18 +305,18 @@ var App = /** @class */ (function () {
         var storage = JSON.parse(localStorage.getItem("personajes"));
         if (storage == null || storage[0] == undefined) //Si el servidor no trae nada creo la estructura vacía.
          {
-            personajes[0] = new Personaje();
+            personajes[0] = new Legislador();
         }
         else {
             for (var i = 0; i < storage.length; i++) {
-                personajes[i] = new Personaje(storage[i]["id"], storage[i]["nombre"], storage[i]["apellido"], storage[i]["email"], storage[i]["edad"], storage[i]["sexo"], storage[i]["tipo"]);
+                personajes[i] = new Legislador(storage[i]["id"], storage[i]["nombre"], storage[i]["apellido"], storage[i]["email"], storage[i]["edad"], storage[i]["sexo"], storage[i]["tipo"]);
             }
         }
         return personajes;
     };
     App.cargarPersonajeSeleccionado = function () {
         var storage = JSON.parse(localStorage.getItem("personajeSeleccionado"));
-        var personajeSeleccionado = new Personaje(storage["id"], storage["nombre"], storage["apellido"], storage["email"], storage["edad"], storage["sexo"], storage["tipo"]);
+        var personajeSeleccionado = new Legislador(storage["id"], storage["nombre"], storage["apellido"], storage["email"], storage["edad"], storage["sexo"], storage["tipo"]);
         return personajeSeleccionado;
     };
     //Oculta la tabla de personajes, y muestra el formulario invocando la función pertinente
@@ -305,6 +375,7 @@ var App = /** @class */ (function () {
         var filtroTipo = $("#filtroTipo");
         filtroTipo.addClass("form-control-inline col-sm-4");
         filtroTipo.append("<option id=opcionTodos>");
+        filtroTipo.on("change", App.traerPersonajes);
         $("#opcionTodos").text("Todos");
         for (var unSexo in ESexo) {
             if (isNaN(Number(unSexo))) //Para que no traiga los índices
@@ -479,7 +550,7 @@ var App = /** @class */ (function () {
                     var grupoTipo3 = $("#grupoTipo3");
                     grupoTipo3.addClass("col-sm-10");
                     grupoTipo.addClass("grupoInterno");
-                    for (var unTipo in ETipo) {
+                    for (var unTipo in ELegislador) {
                         if (isNaN(Number(unTipo))) //Para que no traiga los índices
                          {
                             grupoTipo3.append("<div id=grupoTipo" + unTipo + ">");
@@ -512,7 +583,7 @@ var App = /** @class */ (function () {
                     //grupo.append("<legend id=leyenda>");
                     //grupo.append("<h5 id=leyenda>");
                     //let leyenda:JQuery<HTMLElement> = $("#leyenda");
-                    //leyenda.text("Personaje");
+                    //leyenda.text("Legislador");
                     var atributoCapitalizado = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase(); //Primer letra en mayuscula, resto minuscula
                     grupo.append("<label id=etiqueta" + value + ">");
                     var etiqueta = $("#etiqueta" + value);
@@ -627,7 +698,7 @@ var App = /** @class */ (function () {
                 case "tipo":
                     if (personajeSeleccionado !== undefined) //Modificar o Borrar
                      {
-                        for (var unTipo in ETipo) {
+                        for (var unTipo in ELegislador) {
                             if (isNaN(Number(unTipo))) {
                                 if (unTipo == personajeSeleccionado.getTipo()) {
                                     $("#opt" + unTipo).prop("checked", true);
@@ -640,9 +711,9 @@ var App = /** @class */ (function () {
                     }
                     else //Agregar
                      {
-                        for (var unTipo in ETipo) {
+                        for (var unTipo in ELegislador) {
                             if (isNaN(Number(unTipo))) {
-                                if (unTipo == ETipo.Diputado) {
+                                if (unTipo == ELegislador.Diputado) {
                                     $("#opt" + unTipo).prop("checked", true);
                                 }
                                 else {
@@ -658,7 +729,7 @@ var App = /** @class */ (function () {
                     }
                     else {
                         if (value === "id") {
-                            $("#txt" + atributoCapitalizado).val(Personaje.getProximoId());
+                            $("#txt" + atributoCapitalizado).val(Legislador.getProximoId());
                         }
                         else {
                             $("#txt" + atributoCapitalizado).val("");
@@ -701,28 +772,31 @@ var App = /** @class */ (function () {
     App.crearDetalle = function (tablaPersonajes, datos) {
         var filaDetalle;
         tablaPersonajes.append("<tbody id=tbody1>");
+        var datosFiltrados = datos.filter(function (value) {
+            return (value.getSexoStr() == $("#filtroTipo").val() || $("#filtroTipo").val() == "Todos");
+        });
         var _loop_1 = function (i) {
             //tablaPersonajes.append("<tr id=filaDetalle" + i + ">");
-            $("#tbody1").append("<tr id=filaDetalle" + datos[i].getId() + ">");
+            $("#tbody1").append("<tr id=filaDetalle" + datosFiltrados[i].getId() + ">");
             //tablaPersonajes.append("<div id=filaDetalle" + i + ">");
-            filaDetalle = $("#filaDetalle" + datos[i].getId());
+            filaDetalle = $("#filaDetalle" + datosFiltrados[i].getId());
             //filaDetalle.addClass("row");
             //let columna;
             filaDetalle.on("click", App.seleccionarFila);
-            //for(let atributo in datos[i].getAtributos())
-            datos[i].getAtributos().forEach(function (value) {
+            //for(let atributo in datosFiltrados[i].getAtributos())
+            datosFiltrados[i].getAtributos().forEach(function (value) {
                 //filaDetalle.append("<td>");
                 //columna = filaDetalle.children("td");
                 //columna.attr("class", value);
-                filaDetalle.append("<td id=ColumnaDetalle" + value + datos[i].getId() + ">" + datos[i].getDinamico(value));
-                //filaDetalle.append("<div id=ColumnaDetalle" + value + i + ">" + datos[i].getDinamico(value));
+                filaDetalle.append("<td id=ColumnaDetalle" + value + datosFiltrados[i].getId() + ">" + datosFiltrados[i].getDinamico(value));
+                //filaDetalle.append("<div id=ColumnaDetalle" + value + i + ">" + datosFiltrados[i].getDinamico(value));
                 //columna = filaDetalle.children("td");
                 //$("#ColumnaDetalle" + value + i).attr("class", value);
-                $("#ColumnaDetalle" + value + datos[i].getId()).addClass(value);
+                $("#ColumnaDetalle" + value + datosFiltrados[i].getId()).addClass(value);
                 //$("#ColumnaDetalle" + value + i).addClass("col-sm-2");
             });
         };
-        for (var i = 0; i < datos.length; i++) {
+        for (var i = 0; i < datosFiltrados.length; i++) {
             _loop_1(i);
         }
     };
@@ -737,8 +811,8 @@ var App = /** @class */ (function () {
     //el atributo id a la fila y carga la personaje en el array de personaje seleccionada.
     App.seleccionarFila = function () {
         var filaActual = $(this);
-        //let personajeSeleccionado:Personaje = App.cargarPersonajeSeleccionado();
-        var personajeSeleccionado = new Personaje();
+        //let personajeSeleccionado:Legislador = App.cargarPersonajeSeleccionado();
+        var personajeSeleccionado = new Legislador();
         //$("#btnEditarPersonaje").removeAttr("disabled");
         //$("#btnEditarPersonaje").css("pointer-events", "auto");
         App.habilitarMenu($("#btnEditarPersonaje"));
@@ -770,7 +844,7 @@ var App = /** @class */ (function () {
     //Llama a la función altaPersonaje del servidor, pasándole el objeto que se quiere agregar por parámetro.
     App.agregarPersonaje = function (personajes, personaje) {
         var nuevoPersonaje = [];
-        personaje.setId(Personaje.getProximoId());
+        personaje.setId(Legislador.getProximoId());
         nuevoPersonaje.push(personaje);
         App.ocultarFormulario();
         App.crearDetalle($("#tablaPersonajes"), nuevoPersonaje);
@@ -781,7 +855,7 @@ var App = /** @class */ (function () {
             personajes.push(personaje);
         }
         localStorage.setItem("personajes", JSON.stringify(personajes));
-        Personaje.setProximoId();
+        Legislador.setProximoId();
     };
     //Llama a la función bajaPersonaje del servidor, pasándole el objeto que se quiere eliminar por parámetro.
     App.borrarPersonaje = function (personajes, personaje) {
@@ -789,7 +863,7 @@ var App = /** @class */ (function () {
         {
             return per.id == personaje.getId();
         });*/
-        if (confirm("¿Confirma el borrado de la persona?\n\n" + personaje.toString())) {
+        if (confirm("¿Confirma el borrado del Legislador?\n\n" + personaje.toString())) {
             var posicion_1 = -1;
             personajes.forEach(function (value, index) {
                 if (value.getId() == personaje.getId()) {
@@ -798,7 +872,7 @@ var App = /** @class */ (function () {
             });
             if (posicion_1 != -1) {
                 personajes.splice(posicion_1, 1);
-                alert("Persona:\n\n" + personaje.toString() + "\n\nfue borrada de la tabla");
+                alert("Legislador:\n\n" + personaje.toString() + "\n\nfue borrada de la tabla");
                 $("#filaSeleccionada").remove();
             }
             App.ocultarFormulario();
@@ -811,7 +885,7 @@ var App = /** @class */ (function () {
         {
             return per.id == personaPost.getId();
         });*/
-        if (confirm("¿Confirma la modificacion de la persona?\n\n" + personaPre.toString() + "\n\na\n\n" + personaPost.toString())) {
+        if (confirm("¿Confirma la modificacion del Legislador?\n\n" + personaPre.toString() + "\n\na\n\n" + personaPost.toString())) {
             var posicion_2 = -1;
             personajes.forEach(function (value, index) {
                 if (value.getId() == personaPost.getId()) {
@@ -821,7 +895,7 @@ var App = /** @class */ (function () {
             if (posicion_2 != -1) {
                 personajes.splice(posicion_2, 1);
                 personajes.push(personaPost);
-                alert("Persona:\n\n" + personaPre.toString() + "\n\nfue modificada a:\n\n" + personaPost.toString());
+                alert("Legislador:\n\n" + personaPre.toString() + "\n\nfue modificada a:\n\n" + personaPost.toString());
                 App.modificarFilaSeleccionada(personaPost);
             }
             App.ocultarFormulario();
@@ -842,7 +916,7 @@ var App = /** @class */ (function () {
     };
     //Crea un objeto JSON a partir de los datos del formulario
     App.personajeEditado = function (personajes) {
-        var personaje = new Personaje();
+        var personaje = new Legislador();
         //for(let atributo in personajes[0].getAtributos())
         personajes[0].getAtributos().forEach(function (value) {
             switch (value) {

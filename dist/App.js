@@ -63,18 +63,18 @@ var App = (function () {
         var personajes = [];
         var storage = JSON.parse(localStorage.getItem("personajes"));
         if (storage == null || storage[0] == undefined) {
-            personajes[0] = new Personaje();
+            personajes[0] = new Legislador();
         }
         else {
             for (var i = 0; i < storage.length; i++) {
-                personajes[i] = new Personaje(storage[i]["id"], storage[i]["nombre"], storage[i]["apellido"], storage[i]["email"], storage[i]["edad"], storage[i]["sexo"], storage[i]["tipo"]);
+                personajes[i] = new Legislador(storage[i]["id"], storage[i]["nombre"], storage[i]["apellido"], storage[i]["email"], storage[i]["edad"], storage[i]["sexo"], storage[i]["tipo"]);
             }
         }
         return personajes;
     };
     App.cargarPersonajeSeleccionado = function () {
         var storage = JSON.parse(localStorage.getItem("personajeSeleccionado"));
-        var personajeSeleccionado = new Personaje(storage["id"], storage["nombre"], storage["apellido"], storage["email"], storage["edad"], storage["sexo"], storage["tipo"]);
+        var personajeSeleccionado = new Legislador(storage["id"], storage["nombre"], storage["apellido"], storage["email"], storage["edad"], storage["sexo"], storage["tipo"]);
         return personajeSeleccionado;
     };
     App.altaPersonaje = function () {
@@ -121,6 +121,7 @@ var App = (function () {
         var filtroTipo = $("#filtroTipo");
         filtroTipo.addClass("form-control-inline col-sm-4");
         filtroTipo.append("<option id=opcionTodos>");
+        filtroTipo.on("change", App.traerPersonajes);
         $("#opcionTodos").text("Todos");
         for (var unSexo in ESexo) {
             if (isNaN(Number(unSexo))) {
@@ -262,7 +263,7 @@ var App = (function () {
                     var grupoTipo3 = $("#grupoTipo3");
                     grupoTipo3.addClass("col-sm-10");
                     grupoTipo.addClass("grupoInterno");
-                    for (var unTipo in ETipo) {
+                    for (var unTipo in ELegislador) {
                         if (isNaN(Number(unTipo))) {
                             grupoTipo3.append("<div id=grupoTipo" + unTipo + ">");
                             var grupoTipo4 = $("#grupoTipo" + unTipo);
@@ -380,7 +381,7 @@ var App = (function () {
                     break;
                 case "tipo":
                     if (personajeSeleccionado !== undefined) {
-                        for (var unTipo in ETipo) {
+                        for (var unTipo in ELegislador) {
                             if (isNaN(Number(unTipo))) {
                                 if (unTipo == personajeSeleccionado.getTipo()) {
                                     $("#opt" + unTipo).prop("checked", true);
@@ -392,9 +393,9 @@ var App = (function () {
                         }
                     }
                     else {
-                        for (var unTipo in ETipo) {
+                        for (var unTipo in ELegislador) {
                             if (isNaN(Number(unTipo))) {
-                                if (unTipo == ETipo.Diputado) {
+                                if (unTipo == ELegislador.Diputado) {
                                     $("#opt" + unTipo).prop("checked", true);
                                 }
                                 else {
@@ -410,7 +411,7 @@ var App = (function () {
                     }
                     else {
                         if (value === "id") {
-                            $("#txt" + atributoCapitalizado).val(Personaje.getProximoId());
+                            $("#txt" + atributoCapitalizado).val(Legislador.getProximoId());
                         }
                         else {
                             $("#txt" + atributoCapitalizado).val("");
@@ -440,16 +441,19 @@ var App = (function () {
     App.crearDetalle = function (tablaPersonajes, datos) {
         var filaDetalle;
         tablaPersonajes.append("<tbody id=tbody1>");
+        var datosFilter = datos.filter(function (value) {
+            return (value.getSexoStr() == $("#filtroTipo").val() || $("#filtroTipo").val() == "Todos");
+        });
         var _loop_1 = function (i) {
-            $("#tbody1").append("<tr id=filaDetalle" + datos[i].getId() + ">");
-            filaDetalle = $("#filaDetalle" + datos[i].getId());
+            $("#tbody1").append("<tr id=filaDetalle" + datosFilter[i].getId() + ">");
+            filaDetalle = $("#filaDetalle" + datosFilter[i].getId());
             filaDetalle.on("click", App.seleccionarFila);
-            datos[i].getAtributos().forEach(function (value) {
-                filaDetalle.append("<td id=ColumnaDetalle" + value + datos[i].getId() + ">" + datos[i].getDinamico(value));
-                $("#ColumnaDetalle" + value + datos[i].getId()).addClass(value);
+            datosFilter[i].getAtributos().forEach(function (value) {
+                filaDetalle.append("<td id=ColumnaDetalle" + value + datosFilter[i].getId() + ">" + datosFilter[i].getDinamico(value));
+                $("#ColumnaDetalle" + value + datosFilter[i].getId()).addClass(value);
             });
         };
-        for (var i = 0; i < datos.length; i++) {
+        for (var i = 0; i < datosFilter.length; i++) {
             _loop_1(i);
         }
     };
@@ -460,7 +464,7 @@ var App = (function () {
     };
     App.seleccionarFila = function () {
         var filaActual = $(this);
-        var personajeSeleccionado = new Personaje();
+        var personajeSeleccionado = new Legislador();
         App.habilitarMenu($("#btnEditarPersonaje"));
         App.blanquearFila();
         filaActual.attr("id", "filaSeleccionada");
@@ -484,7 +488,7 @@ var App = (function () {
     };
     App.agregarPersonaje = function (personajes, personaje) {
         var nuevoPersonaje = [];
-        personaje.setId(Personaje.getProximoId());
+        personaje.setId(Legislador.getProximoId());
         nuevoPersonaje.push(personaje);
         App.ocultarFormulario();
         App.crearDetalle($("#tablaPersonajes"), nuevoPersonaje);
@@ -495,10 +499,10 @@ var App = (function () {
             personajes.push(personaje);
         }
         localStorage.setItem("personajes", JSON.stringify(personajes));
-        Personaje.setProximoId();
+        Legislador.setProximoId();
     };
     App.borrarPersonaje = function (personajes, personaje) {
-        if (confirm("¿Confirma el borrado de la persona?\n\n" + personaje.toString())) {
+        if (confirm("¿Confirma el borrado del Legislador?\n\n" + personaje.toString())) {
             var posicion_1 = -1;
             personajes.forEach(function (value, index) {
                 if (value.getId() == personaje.getId()) {
@@ -507,7 +511,7 @@ var App = (function () {
             });
             if (posicion_1 != -1) {
                 personajes.splice(posicion_1, 1);
-                alert("Persona:\n\n" + personaje.toString() + "\n\nfue borrada de la tabla");
+                alert("Legislador:\n\n" + personaje.toString() + "\n\nfue borrada de la tabla");
                 $("#filaSeleccionada").remove();
             }
             App.ocultarFormulario();
@@ -515,7 +519,7 @@ var App = (function () {
         }
     };
     App.modificarPersonaje = function (personajes, personaPre, personaPost) {
-        if (confirm("¿Confirma la modificacion de la persona?\n\n" + personaPre.toString() + "\n\na\n\n" + personaPost.toString())) {
+        if (confirm("¿Confirma la modificacion del Legislador?\n\n" + personaPre.toString() + "\n\na\n\n" + personaPost.toString())) {
             var posicion_2 = -1;
             personajes.forEach(function (value, index) {
                 if (value.getId() == personaPost.getId()) {
@@ -525,7 +529,7 @@ var App = (function () {
             if (posicion_2 != -1) {
                 personajes.splice(posicion_2, 1);
                 personajes.push(personaPost);
-                alert("Persona:\n\n" + personaPre.toString() + "\n\nfue modificada a:\n\n" + personaPost.toString());
+                alert("Legislador:\n\n" + personaPre.toString() + "\n\nfue modificada a:\n\n" + personaPost.toString());
                 App.modificarFilaSeleccionada(personaPost);
             }
             App.ocultarFormulario();
@@ -539,7 +543,7 @@ var App = (function () {
         });
     };
     App.personajeEditado = function (personajes) {
-        var personaje = new Personaje();
+        var personaje = new Legislador();
         personajes[0].getAtributos().forEach(function (value) {
             switch (value) {
                 case "sexo":

@@ -1,5 +1,5 @@
-var ETipo;
-(function (ETipo) {
-    ETipo["Diputado"] = "Diputado";
-    ETipo["Senador"] = "Senador";
-})(ETipo || (ETipo = {}));
+var Legislador;
+(function (Legislador) {
+    Legislador["Diputado"] = "Diputado";
+    Legislador["Senador"] = "Senador";
+})(Legislador || (Legislador = {}));
