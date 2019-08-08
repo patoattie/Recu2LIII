@@ -63,6 +63,7 @@ class App
     
         let personajes:Personaje[] = App.cargarArrayPersonajes();
 
+        App.crearFiltros(personajes);
         App.crearTabla(personajes);
         App.crearFormulario(personajes);
     
@@ -142,6 +143,7 @@ class App
         App.desactivarMenu($("#btnGetPersonajes"));
 
         $("#tablaPersonajes").css("display","none");
+        $("#divFiltrosPersonajes").css("display","none");
         $("#formularioPersonajes").css("display","initial");
 
         App.mostrarFormulario(personajes);
@@ -162,9 +164,120 @@ class App
         App.desactivarMenu($("#btnGetPersonajes"));
 
         $("#tablaPersonajes").css("display","none");
+        $("#divFiltrosPersonajes").css("display","none");
         $("#formularioPersonajes").css("display","initial");
 
         App.mostrarFormulario(personajes, App.cargarPersonajeSeleccionado());
+    }
+
+    public static crearFiltros(personajes:Personaje[]):void
+    {
+        let div:JQuery<HTMLElement> = $("#info");
+
+        div.append("<div id=divFiltrosPersonajes>");
+        let divFiltroPersonajes:JQuery<HTMLElement> = $("#divFiltrosPersonajes");
+
+        //Titulo Filtro Tipo
+        divFiltroPersonajes.append("<div id=divFilaFiltros1>");
+        let divFilaFiltros1:JQuery<HTMLElement> = $("#divFilaFiltros1");
+        divFilaFiltros1.addClass("row bg-danger");
+        divFilaFiltros1.append("<h5 id=TituloFiltros>");
+        $("#TituloFiltros").addClass("col-sm-12 text-center");
+        $("#TituloFiltros").text("Filtros");
+
+        divFiltroPersonajes.append("<div id=divFilaFiltros2>");
+        let divFilaFiltros2:JQuery<HTMLElement> = $("#divFilaFiltros2");
+        divFilaFiltros2.addClass("row bg-danger");
+
+        //Filtro de Tipo
+        divFilaFiltros2.append("<div id=divFiltroTipo>");
+        let divFiltroTipo:JQuery<HTMLElement> = $("#divFiltroTipo");
+        divFiltroTipo.addClass("col-sm-4");
+
+        divFiltroTipo.append("<label id=labelFiltroTipo>");
+        let labelFiltroTipo:JQuery<HTMLElement> = $("#labelFiltroTipo");
+        labelFiltroTipo.attr("for", "filtroTipo");
+        labelFiltroTipo.text("Filtrar por");
+
+        divFiltroTipo.append("<select id=filtroTipo>");
+        let filtroTipo:JQuery<HTMLElement> = $("#filtroTipo");
+        filtroTipo.addClass("form-control-inline col-sm-4");
+        filtroTipo.append("<option id=opcionTodos>");
+        $("#opcionTodos").text("Todos");
+
+        for(let unSexo in ESexo)
+        {
+            if(isNaN(Number(unSexo))) //Para que no traiga los índices
+            {
+                filtroTipo.append("<option id=opcion" + unSexo + ">");
+                $("#opcion" + unSexo).text(unSexo);
+            }
+        }
+
+        //Promedio de Edad
+        divFilaFiltros2.append("<div id=divPromedioEdad>");
+        let divPromedioEdad:JQuery<HTMLElement> = $("#divPromedioEdad");
+        divPromedioEdad.addClass("col-sm-4");
+
+        divPromedioEdad.append("<label id=labelPromedioEdad>");
+        let labelPromedioEdad:JQuery<HTMLElement> = $("#labelPromedioEdad");
+        labelPromedioEdad.attr("for", "promedioEdad");
+        labelPromedioEdad.text("Promedio de Edad");
+
+        divPromedioEdad.append("<input id=promedioEdad>");
+        let promedioEdad:JQuery<HTMLElement> = $("#promedioEdad");
+        promedioEdad.attr("type", "text");
+        //promedioEdad.addClass("form-control-inline");
+        promedioEdad.prop("readonly", true);
+        promedioEdad.append("<option id=opcionTodos>");
+
+        //Gender Mix
+        divFilaFiltros2.append("<div id=divGenderMix>");
+        let divGenderMix:JQuery<HTMLElement> = $("#divGenderMix");
+        divGenderMix.addClass("col-sm-4");
+
+        divGenderMix.append("<label id=labelGenderMix>");
+        let labelGenderMix:JQuery<HTMLElement> = $("#labelGenderMix");
+        labelGenderMix.attr("for", "genderMix");
+        labelGenderMix.text("Gender Mix");
+
+        divGenderMix.append("<input id=genderMix>");
+        let genderMix:JQuery<HTMLElement> = $("#genderMix");
+        genderMix.attr("type", "text");
+        //genderMix.addClass("form-control-inline");
+        genderMix.prop("readonly", true);
+        genderMix.append("<option id=opcionTodos>");
+
+        //Titulo Filtro Campos
+        divFiltroPersonajes.append("<div id=divFilaCampos1>");
+        let divFilaCampos1:JQuery<HTMLElement> = $("#divFilaCampos1");
+        divFilaCampos1.addClass("row bg-warning");
+        divFilaCampos1.append("<h5 id=TituloCampos>");
+        $("#TituloCampos").addClass("col-sm-12 text-center");
+        $("#TituloCampos").text("Campos mostrados (tildar los campos a mostrar)");
+
+        divFiltroPersonajes.append("<div id=divFilaCampos2>");
+        let divFilaCampos2:JQuery<HTMLElement> = $("#divFilaCampos2");
+        divFilaCampos2.addClass("row bg-warning");
+
+        //Filtro de Campos
+        personajes[0].getAtributos().forEach(function(value:string):void
+        {
+            divFilaCampos2.append("<div id=divCampo" + value + ">");
+            let divCampo:JQuery<HTMLElement> = $("#divCampo" + value);
+            divCampo.addClass("col-sm-1")
+
+            divCampo.append("<input id=campo" + value + ">");
+            let campo:JQuery<HTMLElement> = $("#campo" + value);
+            campo.attr("type", "checkbox");
+            campo.attr("value", value);
+            campo.prop("checked", true);
+
+            divCampo.append("<label id=etiquetaCampo" + value + ">");
+            let etiquetaCampo:JQuery<HTMLElement> = $("#etiquetaCampo" + value);
+            etiquetaCampo.attr("for", value);
+            etiquetaCampo.text(value);
+        });
     }
 
     //Crea la tabla de personajes en el div info
@@ -377,12 +490,12 @@ class App
                     if(value === "email")
                     {
                         cuadroTexto.attr("type", "email");
-                        cuadroTexto.prop("required", true);
                     }
                     else
                     {
                         cuadroTexto.attr("type", "text");
                     }
+                    cuadroTexto.prop("required", true);
                     cuadroTexto.attr("placeholder", "Ingrese " + value);
                     cuadroTexto.addClass("form-control");
 
@@ -569,6 +682,7 @@ class App
         App.blanquearFila();
 
         $("#tablaPersonajes").css("display","table");
+        $("#divFiltrosPersonajes").css("display","block");
         $("#formularioPersonajes").css("display","none");
 
         App.activarMenu($("#btnGetPersonajes"));
@@ -715,28 +829,31 @@ class App
             return per.id == personaje.getId();
         });*/
 
-        let posicion:number = -1;
-
-        personajes.forEach(function(value:Personaje, index:number)
+        if(confirm("¿Confirma el borrado de la persona?\n\n" + personaje.toString()))
         {
-            if(value.getId() == personaje.getId())
+                let posicion:number = -1;
+                
+                personajes.forEach(function(value:Personaje, index:number)
+                {
+                if(value.getId() == personaje.getId())
+                {
+                    posicion = index;
+                }
+            });
+            
+            if (posicion != -1)
             {
-                posicion = index;
+                personajes.splice(posicion, 1);
+
+                alert("Persona:\n\n" + personaje.toString() + "\n\nfue borrada de la tabla");
+                
+                $("#filaSeleccionada").remove();
             }
-        });
-    
-        if (posicion != -1)
-        {
-            personajes.splice(posicion, 1);
-
-            alert("Personaje:\n\n" + personaje.toString() + "\n\nfue borrada de la tabla");
-
-            $("#filaSeleccionada").remove();
+            
+            App.ocultarFormulario();
+            
+            localStorage.setItem("personajes", JSON.stringify(personajes));
         }
-    
-        App.ocultarFormulario();
-
-        localStorage.setItem("personajes", JSON.stringify(personajes));
     }
 
     //Llama a la función modificarPersonaje del servidor, pasándole el objeto que se quiere modificar por parámetro.
@@ -747,28 +864,31 @@ class App
             return per.id == personaPost.getId();
         });*/
     
-        let posicion:number = -1;
-
-        personajes.forEach(function(value:Personaje, index:number)
+        if(confirm("¿Confirma la modificacion de la persona?\n\n" + personaPre.toString() + "\n\na\n\n" + personaPost.toString()))
         {
-            if(value.getId() == personaPost.getId())
+            let posicion:number = -1;
+
+            personajes.forEach(function(value:Personaje, index:number)
             {
-                posicion = index;
+                if(value.getId() == personaPost.getId())
+                {
+                    posicion = index;
+                }
+            });
+
+            if (posicion != -1)
+            {
+                personajes.splice(posicion, 1);
+                personajes.push(personaPost);
+
+                alert("Persona:\n\n" + personaPre.toString() + "\n\nfue modificada a:\n\n" + personaPost.toString());
+                App.modificarFilaSeleccionada(personaPost);
             }
-        });
+        
+            App.ocultarFormulario();
 
-        if (posicion != -1)
-        {
-            personajes.splice(posicion, 1);
-            personajes.push(personaPost);
-
-            alert("Personaje:\n\n" + personaPre.toString() + "\n\nfue modificada a:\n\n" + personaPost.toString());
-            App.modificarFilaSeleccionada(personaPost);
+            localStorage.setItem("personajes", JSON.stringify(personajes));
         }
-    
-        App.ocultarFormulario();
-
-        localStorage.setItem("personajes", JSON.stringify(personajes));
     }
 
     //Modifica los datos de la fila seleccionada con los datos de la personaje pasada por parámetro.
